@@ -4,18 +4,22 @@ import * as cdk from 'aws-cdk-lib';
 import { SeleniumGlobalStack } from '../lib/selenium_global-stack';
 
 const app = new cdk.App();
-new SeleniumGlobalStack(app, 'SeleniumGlobalStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+// List of all AWS regions
+const regions = [
+  'us-east-1', 'us-east-2', 'us-west-1', 'us-west-2',
+  'af-south-1', 'ap-east-1', 'ap-south-2', 'ap-southeast-3',
+  'ap-south-1', 'ap-northeast-3', 'ap-northeast-2', 'ap-southeast-1',
+  'ap-southeast-2', 'ap-northeast-1', 'ca-central-1', 'eu-central-1', 'eu-west-1', 'eu-west-2', 
+  'eu-south-1', 'eu-west-3', 'eu-south-2', 'eu-north-1', 'me-central-1', 'sa-east-1'
+];
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  env: { account: '281318412783', region: 'us-east-1' }
+// Account ID
+const account = '281318412783';
 
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+// Iterate through each region and deploy the stack
+regions.forEach(region => {
+  new SeleniumGlobalStack(app, `SeleniumGlobalStack-${region}`, {
+    env: { account: account, region: region }
+  });
 });

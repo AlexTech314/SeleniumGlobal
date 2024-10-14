@@ -9,15 +9,15 @@ export class SeleniumGlobalStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const lambdaFunction = new DockerImageFunction(this, `SeleniumLambda`, {
+    const lambdaFunction = new DockerImageFunction(this, `${id}-SeleniumLambda`, {
       code: DockerImageCode.fromImageAsset("./src"),
       timeout: Duration.seconds(40),
-      functionName: `function`,
+      functionName: `${id}-function`,
       memorySize: 512,
       logRetention: RetentionDays.ONE_WEEK
     });
 
-    const gateway = new LambdaRestApi(this, `SeleniumGateway`, {
+    const gateway = new LambdaRestApi(this, `${id}-SeleniumGateway`, {
       handler: lambdaFunction,
       proxy: false
     });

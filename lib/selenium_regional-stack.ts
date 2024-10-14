@@ -11,7 +11,7 @@ export class SeleniumRegionalStack extends cdk.Stack {
 
     const lambdaFunction = new DockerImageFunction(this, `${id}-SeleniumLambda`, {
       code: DockerImageCode.fromImageAsset("./src"),
-      timeout: Duration.seconds(40),
+      timeout: Duration.seconds(900),
       functionName: `${id}-function`,
       memorySize: 512,
       logRetention: RetentionDays.ONE_WEEK

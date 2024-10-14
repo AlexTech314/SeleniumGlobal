@@ -24,19 +24,19 @@ def handler(event, context):
         # Locate and select "License Type" dropdown
         license_type_select = Select(driver.find_element(By.ID, 'licenseType'))
         logger.debug("License Type dropdown located.")
-        license_type_select.select_by_visible_text('Psychologist')
+        license_type_select.select_by_visible_text('Licensed Marriage and Family Therapist')
         logger.debug("Selected 'Psychologist' from License Type dropdown.")
 
         # Fill in the First Name
         first_name_input = driver.find_element(By.ID, 'firstName')
         logger.debug("First Name input field located.")
-        first_name_input.send_keys('Susan')
+        first_name_input.send_keys('Emily')
         logger.debug("Entered 'Susan' into First Name input.")
 
         # Fill in the Last Name
         last_name_input = driver.find_element(By.ID, 'lastName')
         logger.debug("Last Name input field located.")
-        last_name_input.send_keys('Lok')
+        last_name_input.send_keys('Lui')
         logger.debug("Entered 'Lok' into Last Name input.")
 
         # Click the Search button

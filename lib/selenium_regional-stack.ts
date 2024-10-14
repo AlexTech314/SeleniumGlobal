@@ -5,7 +5,7 @@ import { Duration } from 'aws-cdk-lib';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { LambdaIntegration, LambdaRestApi, Period } from 'aws-cdk-lib/aws-apigateway';
 
-export class SeleniumGlobalStack extends cdk.Stack {
+export class SeleniumRegionalStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 

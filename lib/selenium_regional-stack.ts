@@ -13,7 +13,7 @@ export class SeleniumRegionalStack extends cdk.Stack {
       code: DockerImageCode.fromImageAsset("./src"),
       timeout: Duration.seconds(900),
       functionName: `${id}-function`,
-      memorySize: 512,
+      memorySize: 2048,
       logRetention: RetentionDays.ONE_WEEK
     });
 

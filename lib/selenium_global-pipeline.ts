@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
+import { CodeBuildStep, CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
 import { SeleniumRegionalStage } from './selenium_regional-stage';
 import { ACCOUNT, REGIONS } from '../bin/selenium_global';
 
@@ -20,8 +20,15 @@ export class SeleniumGlobalPipeline extends cdk.Stack {
         })
 
         REGIONS.forEach((region) => {
-            pipeline.addStage(new SeleniumRegionalStage(this, region, {
+            const regionalStage = pipeline.addStage(new SeleniumRegionalStage(this, region, {
                 env: { account: ACCOUNT, region: region }
+            }))
+
+            regionalStage.addPre(new CodeBuildStep("testing", {
+                commands: [
+                    'npm ci',
+                    'npm test'
+                ]
             }))
         })
     }

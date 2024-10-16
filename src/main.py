@@ -74,7 +74,11 @@ def handler(event, context):
                 license_number_result = result.find_element(By.XPATH, './/a').text
                 details = result.text.split("\n")
                 
-                res_body.append([index, result])
+                res_body.append({
+                    "name": name,
+                    "license_number_result": license_number_result,
+                    "details": details
+                })
                 logger.debug("Extracted result #%d: %s", index + 1, result)
             except Exception as e:
                 logger.exception("Error extracting data from result #%d: %s", index + 1, str(e))

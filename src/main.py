@@ -62,7 +62,7 @@ def handler(event, context):
         search_button.click()
         logger.debug("Search button clicked.")
 
-        # Extract the results
+        # Extract the resultsx
         results = driver.find_elements(By.CLASS_NAME, 'post.yes')
         logger.debug("Results located: %d results found.", len(results))
 
@@ -74,7 +74,7 @@ def handler(event, context):
                 license_number_result = result.find_element(By.XPATH, './/a').text
                 details = result.text.split("\n")
                 
-                res_body.append([idx, result])
+                res_body.append([index, result])
                 logger.debug("Extracted result #%d: %s", index + 1, result)
             except Exception as e:
                 logger.exception("Error extracting data from result #%d: %s", index + 1, str(e))

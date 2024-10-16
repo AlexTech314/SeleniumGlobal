@@ -7,10 +7,7 @@ const app = new cdk.App();
 
 export const ACCOUNT = '281318412783';
 export const REGIONS = [
-  'us-east-1', 
-  'sa-east-1', 
-  'us-west-2', 
-  'us-east-2'
+  'us-east-1'
 ]
 
 new SeleniumGlobalPipeline(app, `SeleniumGlobalPipeline`, {

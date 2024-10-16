@@ -13,7 +13,24 @@ logger.setLevel(logging.DEBUG)
 
 def handler(event, context):
     logger.debug("Handler invoked. Event: %s", json.dumps(event))
+    
     try:
+        # Parse the incoming event body
+        body = json.loads(event.get('body', '{}'))
+        state = body.get('state')
+        license_type = body.get('licenseType')
+        license_number = body.get('licenseNumber')
+        first_name = body.get('firstName')
+        last_name = body.get('lastName')
+
+        # Check if all required fields are present
+        if not all([state, license_type, license_number, first_name, last_name]):
+            logger.error("Missing one or more required fields.")
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'error': 'Missing required fields in the body.'})
+            }
+
         driver = initialise_driver()
         logger.debug("Webdriver initialized successfully.")
 
@@ -24,20 +41,20 @@ def handler(event, context):
         # Locate and select "License Type" dropdown
         license_type_select = Select(driver.find_element(By.ID, 'licenseType'))
         logger.debug("License Type dropdown located.")
-        license_type_select.select_by_visible_text('Licensed Marriage and Family Therapist')
-        logger.debug("Selected 'Psychologist' from License Type dropdown.")
+        license_type_select.select_by_visible_text(license_type)
+        logger.debug(f"Selected '{license_type}' from License Type dropdown.")
 
         # Fill in the First Name
         first_name_input = driver.find_element(By.ID, 'firstName')
         logger.debug("First Name input field located.")
-        first_name_input.send_keys('Emily')
-        logger.debug("Entered 'Susan' into First Name input.")
+        first_name_input.send_keys(first_name)
+        logger.debug(f"Entered '{first_name}' into First Name input.")
 
         # Fill in the Last Name
         last_name_input = driver.find_element(By.ID, 'lastName')
         logger.debug("Last Name input field located.")
-        last_name_input.send_keys('Lui')
-        logger.debug("Entered 'Lok' into Last Name input.")
+        last_name_input.send_keys(last_name)
+        logger.debug(f"Entered '{last_name}' into Last Name input.")
 
         # Click the Search button
         search_button = driver.find_element(By.XPATH, '//input[@value="SEARCH"]')
@@ -54,15 +71,15 @@ def handler(event, context):
         for index, result in enumerate(results):
             try:
                 name = result.find_element(By.XPATH, './/strong').text
-                license_number = result.find_element(By.XPATH, './/a').text
+                license_number_result = result.find_element(By.XPATH, './/a').text
                 details = result.text.split("\n")
                 
                 res_body.append({
                     'name': name,
-                    'license_number': license_number,
+                    'license_number': license_number_result,
                     'details': details
                 })
-                logger.debug("Extracted result #%d: Name: %s, License Number: %s", index + 1, name, license_number)
+                logger.debug("Extracted result #%d: Name: %s, License Number: %s", index + 1, name, license_number_result)
             except Exception as e:
                 logger.exception("Error extracting data from result #%d: %s", index + 1, str(e))
         

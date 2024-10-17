@@ -8,3 +8,6 @@ node_modules
 cdk.out
 
 test/notes.txt
+.env
+.env/*
+src/.env

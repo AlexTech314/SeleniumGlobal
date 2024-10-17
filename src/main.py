@@ -102,14 +102,32 @@ def initialise_driver():
     logger.debug("Initializing webdriver.")
     try:
         chrome_options = Options()
-        chrome_options.add_argument("--headless")  # Run in headless mode
-        chrome_options.add_argument("--window-size=2560x1440")  # Set a default window size
+        chrome_options.add_argument("--headless=new")
         chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
-        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-        chrome_options.add_experimental_option('useAutomationExtension', False)
-        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-dev-tools")
+        chrome_options.add_argument("--no-zygote")
+        chrome_options.add_argument("--single-process")
+        chrome_options.add_argument(f"--user-data-dir={mkdtemp()}")
+        chrome_options.add_argument(f"--data-path={mkdtemp()}")
+        chrome_options.add_argument(f"--disk-cache-dir={mkdtemp()}")
+        chrome_options.add_argument("--remote-debugging-pipe")
+        chrome_options.add_argument("--verbose")
+        chrome_options.add_argument("--log-path=/tmp")
+        chrome_options.binary_location = "/opt/chrome/chrome-linux64/chrome"
 
-        driver = webdriver.Chrome(options=chrome_options)
+        service = Service(
+            executable_path="/opt/chrome-driver/chromedriver-linux64/chromedriver",
+            service_log_path="/tmp/chromedriver.log"
+        )
+
+        driver = webdriver.Chrome(
+            service=service,
+            options=chrome_options
+        )
+
         logger.debug("Webdriver initialized.")
         return driver
 

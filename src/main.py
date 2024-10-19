@@ -41,8 +41,20 @@ def handler(event, context):
         # Locate and select "License Type" dropdown
         license_type_select = Select(driver.find_element(By.ID, 'licenseType'))
         logger.debug("License Type dropdown located.")
-        license_type_select.select_by_visible_text(license_type)
-        logger.debug(f"Selected '{license_type}' from License Type dropdown.")
+        
+        try:
+            license_type_select.select_by_visible_text(license_type)
+            logger.debug(f"Selected '{license_type}' from License Type dropdown.")
+        except Exception as e:
+            logger.debug(f'Exception while selecting from License Type dropdown: {str(e)} \n Returning available options.')
+            
+            return {
+                'statusCode': 400,
+                'body': json.dumps({
+                    'message': 'License Type is invalid. Please select from the provided License Type options.',
+                    'license_type_options': [option.text for option in license_type_select.options]
+                })
+            }
 
         # Fill in the First Name
         first_name_input = driver.find_element(By.ID, 'firstName')
@@ -68,29 +80,19 @@ def handler(event, context):
 
         # Loop through each result and extract the key data
         res_body = []
-        for index, result in enumerate(results):
-            try:
-                name = result.find_element(By.XPATH, './/strong').text
-                license_number_result = result.find_element(By.XPATH, './/a').text
-                details = result.text.split("\n")
-                
-                res_body.append({
-                    "name": name,
-                    "license_number_result": license_number_result,
-                    "details": details
-                })
-                logger.debug("Extracted result #%d: %s", index + 1, result)
-            except Exception as e:
-                logger.exception("Error extracting data from result #%d: %s", index + 1, str(e))
+        
+        # Extract the results
+        details = results[0].text.split("\n")
+        extracted_info = extract_details(details)
         
         driver.quit()
         logger.debug("Webdriver closed.")
 
         return {
             'statusCode': 200,
-            'body': json.dumps(res_body)
+            'body': json.dumps(extracted_info)
         }
-
+        
     except Exception as e:
         logger.exception("Error in handler: %s", str(e))
         return {
@@ -134,3 +136,32 @@ def initialise_driver():
     except Exception as e:
         logger.exception("Error initializing webdriver: %s", str(e))
         raise
+    
+def extract_details(details):
+    # Dictionary to hold the extracted information
+    extracted_info = {}
+
+    # Extract the name (always the first item in the list)
+    extracted_info['name'] = details[0]
+
+    # Loop through each string in details starting from the second item
+    for line in details[1:]:
+        if "LICENSE NUMBER" in line and "LICENSE TYPE" in line:
+            # Extract license number and type
+            parts = line.split(" LICENSE TYPE: ")
+            license_number = parts[0].split("LICENSE NUMBER: ")[1]
+            license_type = parts[1]
+            extracted_info['license_number'] = license_number
+            extracted_info['license_type'] = license_type
+
+        elif "LICENSE STATUS" in line:
+            # Extract license status
+            license_status = line.split("LICENSE STATUS: ")[1]
+            extracted_info['license_status'] = license_status
+
+        elif "EXPIRATION DATE" in line:
+            # Extract expiration date
+            expiration_date = line.split("EXPIRATION DATE: ")[1]
+            extracted_info['expiration_date'] = expiration_date
+
+    return extracted_info

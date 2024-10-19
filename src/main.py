@@ -77,10 +77,15 @@ def handler(event, context):
         # Extract the resultsx
         results = driver.find_elements(By.CLASS_NAME, 'post.yes')
         logger.debug("Results located: %d results found.", len(results))
-
-        # Loop through each result and extract the key data
-        res_body = []
         
+        if len(results) == 0:
+            return {
+                'statusCode': 404,
+                'body': json.dumps({
+                    'message': 'No results found for the provided information.'
+                })
+            }
+            
         # Extract the results
         details = results[0].text.split("\n")
         extracted_info = extract_details(details)
@@ -97,7 +102,7 @@ def handler(event, context):
         logger.exception("Error in handler: %s", str(e))
         return {
             'statusCode': 500,
-            'body': json.dumps({'error': str(e)})
+            'body': json.dumps({'Server error': str(e)})
         }
 
 def initialise_driver():

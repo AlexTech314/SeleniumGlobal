@@ -34,8 +34,8 @@ export class SeleniumRegionalStack extends cdk.Stack {
     const usagePlan = gateway.addUsagePlan(`${id}-UsagePlan`, {
       name: `${id}-UsagePlan`,
       throttle: {
-        rateLimit: 10,
-        burstLimit: 2
+        rateLimit: 5,
+        burstLimit: 5
       },
       quota: {
         limit: 10000,

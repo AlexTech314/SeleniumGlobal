@@ -40,6 +40,13 @@ def handler(event, context):
                 'statusCode': 400,
                 'body': json.dumps({'error': 'Missing required fields in the body. Please include: state, license_number, first_name, last_name, license_type'})
             }
+            
+        if state != "CA":
+            logger.error("Invalid state.")
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'error': 'Only California (CA) is currently supported'})
+            }            
 
             
         max_retries = 3  # Maximum number of retries

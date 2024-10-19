@@ -6,6 +6,10 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from tempfile import mkdtemp
+from bs4 import BeautifulSoup
+
+import random
+import requests
 
 # Setup logger
 logger = logging.getLogger()

@@ -72,7 +72,7 @@ def handler(event, context):
                         'statusCode': 400,
                         'body': json.dumps({
                             'message': 'License Type is invalid. Please select from the provided License Type options.',
-                            'license_type_options': [option.text for option in license_type_select.options if option != ""]
+                            'license_type_options': [option.text for option in license_type_select.options if option.text != ""]
                         })
                     }
 

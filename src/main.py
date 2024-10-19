@@ -34,19 +34,13 @@ def handler(event, context):
         last_name = body.get('lastName')
 
         # Check if all required fields are present
-        if not all([state, license_number, first_name, last_name]):
+        if not all([state, license_number, first_name, last_name, license_type]):
             logger.error("Missing one or more required fields.")
             return {
                 'statusCode': 400,
-                'body': json.dumps({'error': 'Missing required fields in the body.'})
+                'body': json.dumps({'error': 'Missing required fields in the body. Please include: state, license_number, first_name, last_name, license_type'})
             }
-            
-        if license_type is None:
-            logger.error("Missing one or more required fields.")
-            return {
-                'statusCode': 400,
-                'body': json.dumps({'error': 'Missing required fields in the body.'})
-            }
+
             
         max_retries = 3  # Maximum number of retries
         attempt = 0
@@ -78,7 +72,7 @@ def handler(event, context):
                         'statusCode': 400,
                         'body': json.dumps({
                             'message': 'License Type is invalid. Please select from the provided License Type options.',
-                            'license_type_options': [option.text for option in license_type_select.options]
+                            'license_type_options': [option.text for option in license_type_select.options if option != ""]
                         })
                     }
 

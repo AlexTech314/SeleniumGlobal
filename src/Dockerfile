@@ -11,6 +11,8 @@ RUN sh ./chrome-installer.sh
 RUN rm ./chrome-installer.sh
 
 RUN pip install selenium
+RUN pip install requests
+RUN pip install bs4
 
 COPY main.py ./
 
